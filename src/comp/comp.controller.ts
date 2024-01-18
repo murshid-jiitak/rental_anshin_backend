@@ -1,35 +1,48 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { CompService } from './comp.service';
-
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('comp')
+@UseGuards(JwtAuthGuard)
 export class CompController {
-    constructor(private compService: CompService) {}
+  constructor(private compService: CompService) {}
 
-    @Get('getall')
-    async getAllCompanies() {
-        try {
-            console.log('sucess')
-            const companies = await this.compService.getAllCompanies();
-            return { success: true, data: companies };
-        } catch (error) {
-            return { success: false, error: error.message };
-        }
+  @UseGuards(JwtAuthGuard)
+  @Get('getall')
+  async getAllCompanies() {
+    try {
+      console.log('success');
+      const companies = await this.compService.getAllCompanies();
+      return { success: true, data: companies };
+    } catch (error) {
+      return { success: false, error: error.message };
     }
+  }
 
-    @Post ('create')
-    async createComponies(
-        @Body('email') email: string,
-        @Body('company_name') title : string,
+  @UseGuards(JwtAuthGuard)
+  @Post('create')
+  async create(
+    @Body('email') email: string,
+    @Body('companyName') comp_name: string,
+    @Body('number') mobNumber: number,
+  ) {
+    // if datas are succesfully inserted , send an email to componey inbox by passing id
+    return await this.compService.create(email, comp_name, mobNumber);
+  }
 
-      ) {
-        createCompany(
-            email,
-            registerd,
-            title,
-            property,
-            address,
-            hash
-        )
-      }
+  // extract id from invitaion link
+  // get typed passwrod
+  // pass word along with id and call updatePassword function
+  @Post('invitation')
+  async updatePassword(
+    @Body('companyId') companyId: string,
+    @Body('password') password: string,
+  ) {
+    try {
+      const result = await this.compService.updatePassword(companyId, password);
+      return { success: true, message: result.message };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
 }

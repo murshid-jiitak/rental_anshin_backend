@@ -1,17 +1,17 @@
 -- CreateTable
 CREATE TABLE "User" (
     "email" TEXT NOT NULL,
-    "hash" TEXT NOT NULL
+    "password" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "Company" (
-    "id" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
     "registerd" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "title" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "property" TEXT NOT NULL,
-    "address" TEXT NOT NULL,
+    "number" BIGINT NOT NULL,
+    "status" BOOLEAN NOT NULL,
     "hash" TEXT NOT NULL,
 
     CONSTRAINT "Company_pkey" PRIMARY KEY ("id")

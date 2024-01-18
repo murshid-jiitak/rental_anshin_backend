@@ -1,42 +1,45 @@
 import {
-    Injectable,
-    NotFoundException,
-    UnauthorizedException,
-  } from '@nestjs/common';
-  import { PrismaService } from '../prisma/prisma.service';
-  import * as bcrypt from 'bcrypt';
-  import { JwtService } from '@nestjs/jwt';
-  
-  @Injectable()
-  export class AuthService {
-    constructor(
-      private prisma: PrismaService,
-      private jwtService: JwtService,
-    ) {}
-  
-    async signin(email: string, password: string) {
-      const user = await this.prisma.user.findUnique({
-        where: { email: email },
-      });
-  
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-  
-    //   const passwordMatch = await bcrypt.compare(
-    //     password,
-    //     user.hash,
-    //   );
-  
-      if (password != user.hash) {
-        throw new UnauthorizedException('Incorrect password');
-      }
-  
-      return this.generateToken(user.email);
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+
+@Injectable()
+export class AuthService {
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+  ) {}
+
+  async signin(email: string, password: string) {
+    const user = await this.findUserByEmail(email);
+    this.validateUser(user, password);
+    return this.generateToken(user.email);
+  }
+
+  private async findUserByEmail(email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    console.log(user)
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
-  
-    private generateToken(userId: string) {
-      const payload = { sub: userId };
-      return this.jwtService.sign(payload);
+    return user;
+  }
+
+  private async validateUser(user: any, password: string) {
+    // Use bcrypt for secure password comparison
+    const passwordMatch = await bcrypt.compare(password, user.hash);
+
+    if (!passwordMatch) {
+      throw new UnauthorizedException('Incorrect password');
     }
   }
+
+  private generateToken(userId: string) {
+    const payload = { sub: userId };
+    return this.jwtService.sign(payload);
+  }
+}

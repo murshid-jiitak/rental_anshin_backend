@@ -5,17 +5,13 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-
-
   @Post('signin')
   async signin(
     @Body('email') email: string,
     @Body('password') password: string,
   ) {
-    const token = await this.authService.signin(
-      email,
-      password,
-    );
+    console.log(email)
+    const token = await this.authService.signin(email, password);
     return { token };
   }
 }
