@@ -15,7 +15,7 @@ export class CompService {
       throw new Error(`Failed to retrieve companies: ${error.message}`);
     }
   }
-  async create(email: string, title: string, number: number) {
+  async create(email: string, title: string, number: string) {
     try {
       const createdCompany = await this.prisma.company.create({
         data: {
@@ -33,7 +33,7 @@ export class CompService {
       await this.sendInvitationEmail(email, invitationLink);
       console.log(invitationLink);
 
-      return { success: true, message: 'Company created, invitation sent!' };
+      return { success: true, message: 'new Company ID created, invitation sent!' };
     } catch (error) {
       throw new Error(`Failed to create company: ${error.message}`);
     }
@@ -48,6 +48,9 @@ export class CompService {
   // function to update password in db
   async updatePassword(companyId: string, password: string): Promise<any> {
     try {
+      if (!password || password.trim() === '') {
+        throw new Error('Password is required');
+      }
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const existingCompany = await this.prisma.company.findUnique({

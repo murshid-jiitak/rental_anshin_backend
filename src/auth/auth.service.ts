@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -16,29 +15,29 @@ export class AuthService {
 
   async signin(email: string, password: string) {
     const user = await this.findUserByEmail(email);
-    this.validateUser(user, password);
+    await this.validateUser(user, password);
     return this.generateToken(user.email);
   }
 
-  private async findUserByEmail(email: string) {
+  async findUserByEmail(email: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
-    console.log(user)
     if (!user) {
       throw new NotFoundException('User not found');
     }
     return user;
   }
 
-  private async validateUser(user: any, password: string) {
+  async validateUser(user: any, password: string) {
     // Use bcrypt for secure password comparison
-    const passwordMatch = await bcrypt.compare(password, user.hash);
+    // const passwordMatch = await bcrypt.compare(password, user.hash);
 
-    if (!passwordMatch) {
+    if (password!=user.password) {
       throw new UnauthorizedException('Incorrect password');
     }
+
   }
 
-  private generateToken(userId: string) {
+  generateToken(userId: string) {
     const payload = { sub: userId };
     return this.jwtService.sign(payload);
   }

@@ -10,7 +10,7 @@ export class AuthController {
     @Body('email') email: string,
     @Body('password') password: string,
   ) {
-    console.log(email)
+
     const token = await this.authService.signin(email, password);
     return { token };
   }

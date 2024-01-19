@@ -3,7 +3,6 @@ import { CompService } from './comp.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('comp')
-@UseGuards(JwtAuthGuard)
 export class CompController {
   constructor(private compService: CompService) {}
 
@@ -24,7 +23,7 @@ export class CompController {
   async create(
     @Body('email') email: string,
     @Body('companyName') comp_name: string,
-    @Body('number') mobNumber: number,
+    @Body('number') mobNumber: string,
   ) {
     // if datas are succesfully inserted , send an email to componey inbox by passing id
     return await this.compService.create(email, comp_name, mobNumber);
@@ -33,7 +32,7 @@ export class CompController {
   // extract id from invitaion link
   // get typed passwrod
   // pass word along with id and call updatePassword function
-  @Post('invitation')
+  @Post('setPass')
   async updatePassword(
     @Body('companyId') companyId: string,
     @Body('password') password: string,

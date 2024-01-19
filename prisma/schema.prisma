@@ -20,7 +20,7 @@ model Company{
   registerd DateTime @default(now())
   title String
   email String @unique
-  number BigInt
+  number String
   status Boolean
   hash String
 }

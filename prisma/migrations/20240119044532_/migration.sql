@@ -10,7 +10,7 @@ CREATE TABLE "Company" (
     "registerd" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "title" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "number" BIGINT NOT NULL,
+    "number" TEXT NOT NULL,
     "status" BOOLEAN NOT NULL,
     "hash" TEXT NOT NULL,
 
