@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -14,13 +14,18 @@ export class AuthService {
   ) {}
 
   async signin(email: string, password: string) {
+    if (!email){
+      throw new NotFoundException('User not found');
+    }
     const user = await this.findUserByEmail(email);
     await this.validateUser(user, password);
     return this.generateToken(user.email);
   }
 
   async findUserByEmail(email: string) {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    
+    const user = await this.prisma.admin.findUnique({ where: { email } });
+    
     if (!user) {
       throw new NotFoundException('User not found');
     }

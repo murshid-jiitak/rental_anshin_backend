@@ -10,17 +10,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  email String @unique
+model Admin {
+  admin_id       Int    @id @default(autoincrement())
+  email    String @unique
   password String
 }
 
-model Company{
-  id String  @id @default(uuid())
-  registerd DateTime @default(now())
-  title String
-  email String @unique
-  number String
-  status Boolean
-  hash String
+// User company model
+model UserCompany {
+  company_id   Int      @id @default(autoincrement())
+  companyName  String
+  email        String   @unique
+  mobNumber    String
+  registeredOn DateTime @default(now())
+  isLogged     Boolean
+  password     String
 }

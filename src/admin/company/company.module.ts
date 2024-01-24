@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { CompController } from './comp.controller';
-import { CompService } from './comp.service';
-import { PrismaModule } from '../prisma/prisma.module';
+import { CompController } from './company.controller';
+import { CompanyService } from './company.service';
+import { PrismaModule } from '../../../prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
+import { TokenService } from 'src/token/token.service';
 JwtModule
 
 @Module({
@@ -13,6 +14,6 @@ JwtModule
     }),
   ],
   controllers: [CompController],
-  providers: [CompService]
+  providers: [CompanyService, TokenService]
 })
 export class CompModule {}
